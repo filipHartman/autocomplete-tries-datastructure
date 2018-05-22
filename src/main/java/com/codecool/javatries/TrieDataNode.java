@@ -23,6 +23,10 @@ public class TrieDataNode {
         return childrens;
     }
 
+    public void addChildNode(int index, char data) {
+        childrens[index] = new TrieDataNode(data);
+    }
+
     @Override
     public String toString() {
         return Character.toString(data);
