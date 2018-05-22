@@ -19,6 +19,10 @@ public class TrieDataNode {
         return data;
     }
 
+    public TrieDataNode[] getChildrens() {
+        return childrens;
+    }
+
     @Override
     public String toString() {
         return Character.toString(data);
