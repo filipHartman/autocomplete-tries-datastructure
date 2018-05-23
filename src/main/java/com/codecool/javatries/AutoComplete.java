@@ -45,7 +45,39 @@ public class AutoComplete {
      */
     public List<String> autoComplete(String baseChars) {
         List<String> words = new ArrayList<>();
+        TrieDataNode[] childeren = root.getChildrens();
+        TrieDataNode lastCommonNode = root;
+
+        for(int i = 0; i < baseChars.length(); i++) {
+            char letter = baseChars.charAt(i);
+            int index = letter - 'a';
+            if(childeren[index] != null) {
+                lastCommonNode = childeren[index];
+            } else {
+                return new ArrayList<>();
+            }
+            childeren = lastCommonNode.getChildrens();
+        }
+
+
+        if(lastCommonNode.isWord) {
+            words.add(baseChars);
+        } else {
+            getRestLetters(words, baseChars, lastCommonNode);
+        }
+
         return words;
+    }
+
+    private void getRestLetters(List<String> words, String word, TrieDataNode currentNode) {
+        if(currentNode.isWord) {
+            words.add(word);
+        }
+        for(TrieDataNode child : currentNode.getChildrens()) {
+            if(child != null) {
+                getRestLetters(words, word + child.getData(), child);
+            }
+        }
     }
 
     /**
