@@ -1,7 +1,7 @@
 package com.codecool.javatries;
 
 public class TrieDataNode {
-    public static final int ALPHABETIC_SIZE = 26;
+    public static final int ALPHABETIC_SIZE = 52;
     private char data;
     private TrieDataNode[] childrens;
     boolean isWord;
