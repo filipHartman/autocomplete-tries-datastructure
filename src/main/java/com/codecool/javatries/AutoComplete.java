@@ -18,7 +18,24 @@ public class AutoComplete {
      * Adds a word to the Trie.
      */
     public void addWord(String wordToAdd) {
-        // TODO
+        TrieDataNode[] childern = root.getChildrens();
+
+        for(int i = 0; i <wordToAdd.length(); i++) {
+            char letter = wordToAdd.charAt(i);
+            int index = letter - 'a';
+            TrieDataNode current;
+            if(childern[index] != null) {
+                current = childern[index];
+            } else {
+                current = new TrieDataNode(letter);
+                childern[index] = current;
+            }
+
+            childern = current.getChildrens();
+            if(i == wordToAdd.length() - 1) {
+                current.isWord = true;
+            }
+        }
     }
 
     /**
@@ -28,7 +45,6 @@ public class AutoComplete {
      */
     public List<String> autoComplete(String baseChars) {
         List<String> words = new ArrayList<>();
-        // TODO
         return words;
     }
 
