@@ -19,7 +19,7 @@ public class AutoComplete {
      * Adds a word to the Trie.
      */
     public void addWord(String wordToAdd) {
-        HashMap<Character, TrieDataNode> children = root.getChildrens();
+        HashMap<Character, TrieDataNode> children = root.getChildren();
 
         for(int i = 0; i <wordToAdd.length(); i++) {
             char letter = wordToAdd.charAt(i);
@@ -33,7 +33,7 @@ public class AutoComplete {
                 children.put(letter, current);
             }
 
-            children = current.getChildrens();
+            children = current.getChildren();
             if(i == wordToAdd.length() - 1) {
                 current.isWord = true;
             }
@@ -47,7 +47,7 @@ public class AutoComplete {
      */
     public List<String> autoComplete(String baseChars) {
         List<String> words = new ArrayList<>();
-        HashMap<Character, TrieDataNode> children = root.getChildrens();
+        HashMap<Character, TrieDataNode> children = root.getChildren();
         TrieDataNode lastCommonNode = root;
         StringBuilder wordPrefix = new StringBuilder();
         for(int i = 0; i < baseChars.length(); i++) {
@@ -74,14 +74,11 @@ public class AutoComplete {
                 }
             }
             wordPrefix.append(lastCommonNode.getData());
-            children = lastCommonNode.getChildrens();
+            children = lastCommonNode.getChildren();
         }
 
-        if(lastCommonNode.isWord) {
-            words.add(wordPrefix.toString());
-        } else {
-            getRestLetters(words, wordPrefix.toString(), lastCommonNode);
-        }
+        getRestLetters(words, wordPrefix.toString(), lastCommonNode);
+
         Collections.sort(words);
         return words;
     }
@@ -90,7 +87,7 @@ public class AutoComplete {
         if(currentNode.isWord) {
             words.add(word);
         }
-        for(TrieDataNode child : currentNode.getChildrens().values()) {
+        for(TrieDataNode child : currentNode.getChildren().values()) {
             if(child != null) {
                 getRestLetters(words, word + child.getData(), child);
             }
@@ -103,6 +100,20 @@ public class AutoComplete {
      */
     public boolean removeWord(String wordToRemove) {
         // TODO -- Optional homework
+        HashMap<Character, TrieDataNode> children = root.getChildren();
+        for(int i = 0; i < wordToRemove.length(); i++) {
+            char letter = wordToRemove.charAt(i);
+            if(children.get(letter) != null) {
+                if(children.size() == 1) {
+                    children.put(letter, null);
+                    return true;
+                } else {
+                    children = children.get(letter).getChildren();
+                }
+            } else {
+                return false;
+            }
+        }
         return false;
     }
 
