@@ -1,10 +1,12 @@
 package com.codecool.javatries;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class AutoComplete {
-
+    private static final int UPPERCASE_INDEX_OFFSET = 26;
     private TrieDataNode root;
 
     /**
@@ -18,20 +20,21 @@ public class AutoComplete {
      * Adds a word to the Trie.
      */
     public void addWord(String wordToAdd) {
-        TrieDataNode[] childern = root.getChildrens();
+        HashMap<Character, TrieDataNode> children = root.getChildrens();
 
         for(int i = 0; i <wordToAdd.length(); i++) {
             char letter = wordToAdd.charAt(i);
-            int index = letter - 'a';
+
             TrieDataNode current;
-            if(childern[index] != null) {
-                current = childern[index];
-            } else {
+            if(children.get(letter) != null) {
+                current = children.get(letter);
+            }
+            else {
                 current = new TrieDataNode(letter);
-                childern[index] = current;
+                children.put(letter, current);
             }
 
-            childern = current.getChildrens();
+            children = current.getChildrens();
             if(i == wordToAdd.length() - 1) {
                 current.isWord = true;
             }
@@ -45,27 +48,32 @@ public class AutoComplete {
      */
     public List<String> autoComplete(String baseChars) {
         List<String> words = new ArrayList<>();
-        TrieDataNode[] childeren = root.getChildrens();
+        HashMap<Character, TrieDataNode> children = root.getChildrens();
         TrieDataNode lastCommonNode = root;
-
+        StringBuilder wordPrefix = new StringBuilder();
         for(int i = 0; i < baseChars.length(); i++) {
             char letter = baseChars.charAt(i);
-            int index = letter - 'a';
-            if(childeren[index] != null) {
-                lastCommonNode = childeren[index];
-            } else {
+
+            if(children.get(letter) != null) {
+                lastCommonNode = children.get(letter);
+            }
+            else {
                 return new ArrayList<>();
             }
-            childeren = lastCommonNode.getChildrens();
+            wordPrefix.append(lastCommonNode.getData());
+            children = lastCommonNode.getChildrens();
         }
+
+
+
 
 
         if(lastCommonNode.isWord) {
-            words.add(baseChars);
+            words.add(wordPrefix.toString());
         } else {
-            getRestLetters(words, baseChars, lastCommonNode);
+            getRestLetters(words, wordPrefix.toString(), lastCommonNode);
         }
-
+        Collections.sort(words);
         return words;
     }
 
@@ -73,13 +81,22 @@ public class AutoComplete {
         if(currentNode.isWord) {
             words.add(word);
         }
-        for(TrieDataNode child : currentNode.getChildrens()) {
+        for(TrieDataNode child : currentNode.getChildrens().values()) {
             if(child != null) {
                 getRestLetters(words, word + child.getData(), child);
             }
         }
     }
 
+    private int getIndexForLetter(char letter) {
+
+        if(Character.isUpperCase(letter)) {
+            return letter - 'A' + UPPERCASE_INDEX_OFFSET;
+        }
+        else {
+            return letter - 'a';
+        }
+    }
     /**
      * Removes a word from the Trie
      * @return true if the removal was successful

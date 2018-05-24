@@ -1,9 +1,10 @@
 package com.codecool.javatries;
 
+import java.util.HashMap;
+
 public class TrieDataNode {
-    public static final int ALPHABETIC_SIZE = 52;
     private char data;
-    private TrieDataNode[] childrens;
+    private HashMap<Character, TrieDataNode> childrens;
     boolean isWord;
     // TODO add further members as needed
 
@@ -13,7 +14,7 @@ public class TrieDataNode {
      */
     public TrieDataNode(char data) {
         this.data = data;
-        this.childrens = new TrieDataNode[ALPHABETIC_SIZE];
+        this.childrens = new HashMap<>();
         this.isWord = false;
     }
 
@@ -21,12 +22,8 @@ public class TrieDataNode {
         return data;
     }
 
-    public TrieDataNode[] getChildrens() {
+    public HashMap<Character, TrieDataNode> getChildrens() {
         return childrens;
-    }
-
-    public void addChildNode(int index, char data) {
-        childrens[index] = new TrieDataNode(data);
     }
 
     @Override
