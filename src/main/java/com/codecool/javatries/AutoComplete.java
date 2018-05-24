@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class AutoComplete {
-    private static final int UPPERCASE_INDEX_OFFSET = 26;
     private TrieDataNode root;
 
     /**
@@ -54,19 +53,29 @@ public class AutoComplete {
         for(int i = 0; i < baseChars.length(); i++) {
             char letter = baseChars.charAt(i);
 
-            if(children.get(letter) != null) {
-                lastCommonNode = children.get(letter);
-            }
-            else {
-                return new ArrayList<>();
+            if(Character.isUpperCase(letter)) {
+                if(children.get(letter) != null) {
+                    lastCommonNode = children.get(letter);
+                } else if(children.get(Character.toLowerCase(letter)) != null) {
+                    lastCommonNode = children.get(Character.toLowerCase(letter));
+                }
+                else {
+                    return new ArrayList<>();
+                }
+
+            } else {
+                if(children.get(letter) != null) {
+                    lastCommonNode = children.get(letter);
+                } else if(children.get(Character.toUpperCase(letter)) != null) {
+                    lastCommonNode = children.get(Character.toUpperCase(letter));
+                }
+                else {
+                    return new ArrayList<>();
+                }
             }
             wordPrefix.append(lastCommonNode.getData());
             children = lastCommonNode.getChildrens();
         }
-
-
-
-
 
         if(lastCommonNode.isWord) {
             words.add(wordPrefix.toString());
@@ -88,15 +97,6 @@ public class AutoComplete {
         }
     }
 
-    private int getIndexForLetter(char letter) {
-
-        if(Character.isUpperCase(letter)) {
-            return letter - 'A' + UPPERCASE_INDEX_OFFSET;
-        }
-        else {
-            return letter - 'a';
-        }
-    }
     /**
      * Removes a word from the Trie
      * @return true if the removal was successful
