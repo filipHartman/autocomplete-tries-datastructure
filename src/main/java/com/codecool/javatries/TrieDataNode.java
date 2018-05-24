@@ -22,7 +22,7 @@ public class TrieDataNode {
         return data;
     }
 
-    public HashMap<Character, TrieDataNode> getChildrens() {
+    public HashMap<Character, TrieDataNode> getChildren() {
         return childrens;
     }
 
